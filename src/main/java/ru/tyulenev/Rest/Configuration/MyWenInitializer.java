@@ -1,3 +1,4 @@
+//Из файла web.xml
 package ru.tyulenev.Rest.Configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
