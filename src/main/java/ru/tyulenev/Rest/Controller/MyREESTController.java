@@ -35,5 +35,11 @@ public class MyREESTController {
         return emp;
     }
 
+    @PostMapping("/employees")
+    public Employee addNewEmployee(@RequestBody Employee emp) {
+        employeeService.saveEmployee(emp);
+        return emp;
+    }
+
 
 }
