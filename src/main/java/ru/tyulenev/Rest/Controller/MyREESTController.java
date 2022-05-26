@@ -1,12 +1,13 @@
 package ru.tyulenev.Rest.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.tyulenev.Rest.Service.EmployeeService;
 import ru.tyulenev.Rest.entity.Employee;
+import ru.tyulenev.Rest.exceptionHandling.EmployeeIncorrectData;
+import ru.tyulenev.Rest.exceptionHandling.NoSuchEmpException;
 
 import java.util.List;
 
@@ -26,7 +27,31 @@ public class MyREESTController {
     @GetMapping("/employees/{id}")
     public Employee getEmployee(@PathVariable int id) {
         Employee emp = employeeService.getEmployee(id);
+
+        if (emp==null) {
+            throw new NoSuchEmpException("Нет работника с номером " + id + " в БД.");
+        }
+
         return emp;
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<EmployeeIncorrectData> handleException(
+            NoSuchEmpException exception
+    ) {
+        EmployeeIncorrectData data = new EmployeeIncorrectData();
+        data.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler
+    public ResponseEntity<EmployeeIncorrectData> handleException(
+            Exception exception
+    ) {
+        EmployeeIncorrectData data = new EmployeeIncorrectData();
+        data.setInfo(exception.getMessage());
+
+        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
 
 
